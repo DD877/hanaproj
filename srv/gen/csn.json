@@ -1,0 +1,51 @@
+{
+  "namespace": "dibyak.db",
+  "definitions": {
+    "dibyak.db.orders": {
+      "kind": "entity",
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.Integer64"
+        },
+        "customername": {
+          "type": "cds.String",
+          "length": 120
+        },
+        "contactperson": {
+          "type": "cds.String",
+          "length": 64
+        },
+        "grossamount": {
+          "type": "cds.Decimal",
+          "precision": 10,
+          "scale": 2
+        },
+        "currency": {
+          "type": "cds.String",
+          "length": 4
+        }
+      }
+    },
+    "mysrv": {
+      "@source": "interaction_srv.cds",
+      "kind": "service"
+    },
+    "mysrv.hello": {
+      "kind": "function",
+      "params": {
+        "to": {
+          "type": "cds.String"
+        }
+      },
+      "returns": {
+        "type": "cds.String"
+      }
+    }
+  },
+  "meta": {
+    "creator": "CDS Compiler v2.11.4",
+    "flavor": "inferred"
+  },
+  "$version": "2.0"
+}
