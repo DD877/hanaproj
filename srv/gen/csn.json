@@ -1,6 +1,598 @@
 {
-  "namespace": "dibyak.db",
   "definitions": {
+    "mysrv": {
+      "@source": "interaction_srv.cds",
+      "kind": "service"
+    },
+    "mysrv.hello": {
+      "kind": "function",
+      "params": {
+        "to": {
+          "type": "cds.String"
+        }
+      },
+      "returns": {
+        "type": "cds.String"
+      }
+    },
+    "dibyak.db.Guid": {
+      "kind": "type",
+      "type": "cds.String",
+      "length": 32
+    },
+    "dibyak.db.master": {
+      "kind": "context"
+    },
+    "dibyak.db.master.businesspartner": {
+      "kind": "entity",
+      "elements": {
+        "NODE_KEY": {
+          "@title": "{i18n>bp_key}",
+          "key": true,
+          "type": "dibyak.db.Guid",
+          "length": 32
+        },
+        "BP_ROLE": {
+          "@title": "{i18n>bp_role}",
+          "type": "cds.String",
+          "length": 2
+        },
+        "EMAIL_ADDRESS": {
+          "@title": "{i18n>email_addr}",
+          "type": "cds.String",
+          "length": 105
+        },
+        "PHONE_NUMBER": {
+          "@title": "{i18n>Phone_Number}",
+          "type": "cds.String",
+          "length": 32
+        },
+        "FAX_NUMBER": {
+          "@title": "{i18n>Fax_Number}",
+          "type": "cds.String",
+          "length": 32
+        },
+        "WEB_ADDRESS": {
+          "@title": "{i18n>WEB_ADDRESS}",
+          "type": "cds.String",
+          "length": 44
+        },
+        "ADDRESS_GUID": {
+          "@title": "{i18n>Address_Guid}",
+          "type": "cds.Association",
+          "target": "dibyak.db.master.address",
+          "keys": [
+            {
+              "ref": [
+                "NODE_KEY"
+              ]
+            }
+          ]
+        },
+        "BP_ID": {
+          "@title": "{i18n>bp_id}",
+          "type": "cds.String",
+          "length": 32
+        },
+        "COMPANY_NAME": {
+          "@title": "{i18n>company_name}",
+          "type": "cds.String",
+          "length": 250
+        }
+      }
+    },
+    "dibyak.db.master.address": {
+      "kind": "entity",
+      "elements": {
+        "NODE_KEY": {
+          "@title": "{i18n>ap_key1}",
+          "key": true,
+          "type": "dibyak.db.Guid",
+          "length": 32
+        },
+        "CITY": {
+          "@title": "{i18n>City}",
+          "type": "cds.String",
+          "length": 44
+        },
+        "POSTAL_CODE": {
+          "@title": "{i18n>Postal_Code}",
+          "type": "cds.String",
+          "length": 8
+        },
+        "STREET": {
+          "@title": "{i18n>Street}",
+          "type": "cds.String",
+          "length": 44
+        },
+        "BUILDING": {
+          "@title": "{i18n>Building}",
+          "type": "cds.String",
+          "length": 128
+        },
+        "COUNTRY": {
+          "@title": "{i18n>Country}",
+          "type": "cds.String",
+          "length": 44
+        },
+        "ADDRESS_TYPE": {
+          "@title": "{i18n>Address_Type}",
+          "type": "cds.String",
+          "length": 44
+        },
+        "VAL_START_DATE": {
+          "@title": "{i18n>VAL_START_DATE}",
+          "type": "cds.Date"
+        },
+        "VAL_END_DATE": {
+          "@title": "{i18n>VAL_END_DATE}",
+          "type": "cds.Date"
+        },
+        "LATITUDE": {
+          "@title": "{i18n>LATITUDE}",
+          "type": "cds.Decimal"
+        },
+        "LONGITUDE": {
+          "@title": "{i18n>LONGITUDE}",
+          "type": "cds.Decimal"
+        },
+        "businesspartner": {
+          "@title": "{i18n>businesspartner}",
+          "type": "cds.Association",
+          "cardinality": {
+            "max": 1
+          },
+          "target": "dibyak.db.master.businesspartner",
+          "on": [
+            {
+              "ref": [
+                "businesspartner",
+                "ADDRESS_GUID"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "dibyak.db.master.product": {
+      "kind": "entity",
+      "elements": {
+        "NODE_KEY": {
+          "@title": "{i18n>Prod_key1}",
+          "key": true,
+          "type": "dibyak.db.Guid",
+          "length": 32
+        },
+        "PRODUCT_ID": {
+          "@title": "{i18n>Product_Id}",
+          "type": "cds.String",
+          "length": 28
+        },
+        "TYPE_CODE": {
+          "@title": "{i18n>Type_Code}",
+          "type": "cds.String",
+          "length": 2
+        },
+        "CATEGORY": {
+          "@title": "{i18n>Category}",
+          "type": "cds.String",
+          "length": 32
+        },
+        "DESCRIPTION": {
+          "@title": "{i18n>Description}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "SUPPLIER_GUID": {
+          "@title": "{i18n>Supplier_Guid}",
+          "type": "cds.Association",
+          "target": "dibyak.db.master.businesspartner",
+          "keys": [
+            {
+              "ref": [
+                "NODE_KEY"
+              ]
+            }
+          ]
+        },
+        "TAX_TARIF_CODE": {
+          "@title": "{i18n>Tax_Tarif_Code}",
+          "type": "cds.Integer"
+        },
+        "MEASURE_UNIT": {
+          "@title": "{i18n>Measure_Unit}",
+          "type": "cds.String",
+          "length": 2
+        },
+        "WEIGHT_MEASURE": {
+          "@title": "{i18n>Weight_Measure}",
+          "type": "cds.Decimal"
+        },
+        "WEIGHT_UNIT": {
+          "@title": "{i18n>Weight_Unit}",
+          "type": "cds.String",
+          "length": 2
+        },
+        "CURRENCY_CODE": {
+          "@title": "{i18n>Currency_Code}",
+          "type": "cds.String",
+          "length": 4
+        },
+        "PRICE": {
+          "@title": "{i18n>Price}",
+          "type": "cds.Decimal",
+          "precision": 15,
+          "scale": 2
+        },
+        "WIDTH": {
+          "@title": "{i18n>Width}",
+          "type": "cds.Decimal"
+        },
+        "DEPTH": {
+          "@title": "{i18n>Depth}",
+          "type": "cds.Decimal"
+        },
+        "HEIGHT": {
+          "@title": "{i18n>Height}",
+          "type": "cds.Decimal"
+        },
+        "DIM_UNIT": {
+          "@title": "{i18n>Dim_Unit}",
+          "type": "cds.String",
+          "length": 2
+        },
+        "texts": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "dibyak.db.master.product.texts",
+          "on": [
+            {
+              "ref": [
+                "texts",
+                "NODE_KEY"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "NODE_KEY"
+              ]
+            }
+          ]
+        },
+        "localized": {
+          "type": "cds.Association",
+          "target": "dibyak.db.master.product.texts",
+          "on": [
+            {
+              "ref": [
+                "localized",
+                "NODE_KEY"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "NODE_KEY"
+              ]
+            },
+            "and",
+            {
+              "ref": [
+                "localized",
+                "locale"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$user",
+                "locale"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "dibyak.db.master.employees": {
+      "kind": "entity",
+      "includes": [
+        "cuid"
+      ],
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "nameFirst": {
+          "@title": "{i18n>nameFirst}",
+          "type": "cds.String",
+          "length": 40
+        },
+        "nameMiddle": {
+          "@title": "{i18n>nameMiddle}",
+          "type": "cds.String",
+          "length": 40
+        },
+        "nameLast": {
+          "@title": "{i18n>nameLast}",
+          "type": "cds.String",
+          "length": 40
+        },
+        "nameInitials": {
+          "@title": "{i18n>nameInitials}",
+          "type": "cds.String",
+          "length": 40
+        },
+        "sex": {
+          "@title": "{i18n>sex}",
+          "type": "dibyak.common.Gender",
+          "length": 1
+        },
+        "language": {
+          "@title": "{i18n>language}",
+          "type": "cds.String",
+          "length": 1
+        },
+        "phoneNumber": {
+          "@title": "{i18n>phoneNumber}",
+          "@assert.format": "((?:\\+|00)[17](?: |\\-)?|(?:\\+|00)[1-9]\\d{0,2}(?: |\\-)?|(?:\\+|00)1\\-\\d{3}(?: |\\-)?)?(0\\d|\\([0-9]{3}\\)|[1-9]{0,3})(?:((?: |\\-)[0-9]{2}){4}|((?:[0-9]{2}){4})|((?: |\\-)[0-9]{3}(?: |\\-)[0-9]{4})|([0-9]{7}))",
+          "type": "dibyak.common.PhoneNumber",
+          "length": 30
+        },
+        "email": {
+          "@title": "{i18n>email}",
+          "@assert.format": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$",
+          "type": "dibyak.common.Email",
+          "length": 255
+        },
+        "loginName": {
+          "@title": "{i18n>loginName}",
+          "type": "cds.String",
+          "length": 12
+        },
+        "Currency": {
+          "@title": "{i18n>Currency}",
+          "@description": "{i18n>CurrencyCode.Description}",
+          "type": "Currency",
+          "target": "sap.common.Currencies",
+          "keys": [
+            {
+              "ref": [
+                "code"
+              ]
+            }
+          ]
+        },
+        "salaryAmount": {
+          "@title": "{i18n>salaryAmount}",
+          "@Semantics.amount.currencyCode": "CURRENCY_CODE",
+          "@sap.unit": "CURRENCY_CODE",
+          "type": "dibyak.common.AmountT",
+          "precision": 15,
+          "scale": 2
+        },
+        "accountNumber": {
+          "@title": "{i18n>accountNumber}",
+          "type": "cds.String",
+          "length": 16
+        },
+        "bankId": {
+          "@title": "{i18n>bankId}",
+          "type": "cds.String",
+          "length": 20
+        },
+        "bankName": {
+          "@title": "{i18n>bankName}",
+          "type": "cds.String",
+          "length": 64
+        }
+      }
+    },
+    "dibyak.db.transaction": {
+      "kind": "context"
+    },
+    "dibyak.db.transaction.purchaseorder": {
+      "kind": "entity",
+      "includes": [
+        "dibyak.common.Amount",
+        "cuid"
+      ],
+      "elements": {
+        "Currency": {
+          "@title": "{i18n>Currency}",
+          "@description": "{i18n>CurrencyCode.Description}",
+          "type": "Currency",
+          "target": "sap.common.Currencies",
+          "keys": [
+            {
+              "ref": [
+                "code"
+              ]
+            }
+          ]
+        },
+        "GROSS_AMOUNT": {
+          "@title": "{i18n>GROSS_AMOUNT}",
+          "@Semantics.amount.currencyCode": "CURRENCY_CODE",
+          "@sap.unit": "CURRENCY_CODE",
+          "type": "dibyak.common.AmountT",
+          "precision": 15,
+          "scale": 2
+        },
+        "NET_AMOUNT": {
+          "@title": "{i18n>NET_AMOUNT}",
+          "@Semantics.amount.currencyCode": "CURRENCY_CODE",
+          "@sap.unit": "CURRENCY_CODE",
+          "type": "dibyak.common.AmountT",
+          "precision": 15,
+          "scale": 2
+        },
+        "TAX_AMOUNT": {
+          "@title": "{i18n>TAX_AMOUNT}",
+          "@Semantics.amount.currencyCode": "CURRENCY_CODE",
+          "@sap.unit": "CURRENCY_CODE",
+          "type": "dibyak.common.AmountT",
+          "precision": 15,
+          "scale": 2
+        },
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "PO_ID": {
+          "@title": "{i18n>PO_ID}",
+          "type": "cds.Integer"
+        },
+        "PARTNER_GUID": {
+          "@title": "{i18n>PARTNER_GUID}",
+          "type": "cds.Association",
+          "target": "dibyak.db.master.businesspartner",
+          "keys": [
+            {
+              "ref": [
+                "NODE_KEY"
+              ]
+            }
+          ]
+        },
+        "LIFECYCLE_STATUS": {
+          "@title": "{i18n>LIFECYCLE_STATUS}",
+          "type": "cds.String",
+          "length": 1
+        },
+        "OVERALL_STATUS": {
+          "@title": "{i18n>OVERALL_STATUS}",
+          "type": "cds.String",
+          "length": 1
+        },
+        "Items": {
+          "@title": "{i18n>Items}",
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "dibyak.db.transaction.poitems",
+          "on": [
+            {
+              "ref": [
+                "Items",
+                "PARENT_KEY"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        },
+        "NOTE": {
+          "type": "cds.String",
+          "length": 256
+        },
+        "CREATEDBY": {
+          "type": "cds.UUID"
+        },
+        "MODIFIEDBY": {
+          "type": "cds.UUID"
+        },
+        "CREATEDAT": {
+          "type": "cds.Date"
+        },
+        "MODIFIEDAT": {
+          "type": "cds.Date"
+        }
+      }
+    },
+    "dibyak.db.transaction.poitems": {
+      "kind": "entity",
+      "includes": [
+        "dibyak.common.Amount",
+        "cuid"
+      ],
+      "elements": {
+        "Currency": {
+          "@title": "{i18n>Currency}",
+          "@description": "{i18n>CurrencyCode.Description}",
+          "type": "Currency",
+          "target": "sap.common.Currencies",
+          "keys": [
+            {
+              "ref": [
+                "code"
+              ]
+            }
+          ]
+        },
+        "GROSS_AMOUNT": {
+          "@title": "{i18n>GROSS_AMOUNT}",
+          "@Semantics.amount.currencyCode": "CURRENCY_CODE",
+          "@sap.unit": "CURRENCY_CODE",
+          "type": "dibyak.common.AmountT",
+          "precision": 15,
+          "scale": 2
+        },
+        "NET_AMOUNT": {
+          "@title": "{i18n>NET_AMOUNT}",
+          "@Semantics.amount.currencyCode": "CURRENCY_CODE",
+          "@sap.unit": "CURRENCY_CODE",
+          "type": "dibyak.common.AmountT",
+          "precision": 15,
+          "scale": 2
+        },
+        "TAX_AMOUNT": {
+          "@title": "{i18n>TAX_AMOUNT}",
+          "@Semantics.amount.currencyCode": "CURRENCY_CODE",
+          "@sap.unit": "CURRENCY_CODE",
+          "type": "dibyak.common.AmountT",
+          "precision": 15,
+          "scale": 2
+        },
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "PARENT_KEY": {
+          "@title": "{i18n>PARENT_KEY}",
+          "type": "cds.Association",
+          "target": "dibyak.db.transaction.purchaseorder",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "PO_ITEM_POS": {
+          "@title": "{i18n>PO_ITEM_POS}",
+          "type": "cds.Integer"
+        },
+        "PRODUCT_GUID": {
+          "@title": "{i18n>PRODUCT_GUID}",
+          "type": "cds.Association",
+          "target": "dibyak.db.master.product",
+          "keys": [
+            {
+              "ref": [
+                "NODE_KEY"
+              ]
+            }
+          ]
+        }
+      }
+    },
     "dibyak.db.orders": {
       "kind": "entity",
       "elements": {
@@ -27,22 +619,708 @@
         }
       }
     },
-    "mysrv": {
-      "@source": "interaction_srv.cds",
-      "kind": "service"
+    "Language": {
+      "kind": "type",
+      "@title": "{i18n>Language}",
+      "@description": "{i18n>LanguageCode.Description}",
+      "type": "cds.Association",
+      "target": "sap.common.Languages",
+      "keys": [
+        {
+          "ref": [
+            "code"
+          ]
+        }
+      ]
     },
-    "mysrv.hello": {
-      "kind": "function",
-      "params": {
-        "to": {
+    "Currency": {
+      "kind": "type",
+      "@title": "{i18n>Currency}",
+      "@description": "{i18n>CurrencyCode.Description}",
+      "type": "cds.Association",
+      "target": "sap.common.Currencies",
+      "keys": [
+        {
+          "ref": [
+            "code"
+          ]
+        }
+      ]
+    },
+    "Country": {
+      "kind": "type",
+      "@title": "{i18n>Country}",
+      "@description": "{i18n>CountryCode.Description}",
+      "type": "cds.Association",
+      "target": "sap.common.Countries",
+      "keys": [
+        {
+          "ref": [
+            "code"
+          ]
+        }
+      ]
+    },
+    "sap.common": {
+      "kind": "context"
+    },
+    "sap.common.Languages": {
+      "kind": "entity",
+      "@cds.autoexpose": true,
+      "@cds.persistence.skip": "if-unused",
+      "@UI.Identification": [
+        {
+          "Value": {
+            "=": "name"
+          }
+        }
+      ],
+      "@cds.odata.valuelist": true,
+      "includes": [
+        "sap.common.CodeList"
+      ],
+      "elements": {
+        "name": {
+          "@title": "{i18n>Name}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@title": "{i18n>Description}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@title": "{i18n>LanguageCode}",
+          "@Common.Text": {
+            "=": "name"
+          },
+          "key": true,
+          "type": "cds.String",
+          "length": 14
+        },
+        "texts": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "sap.common.Languages.texts",
+          "on": [
+            {
+              "ref": [
+                "texts",
+                "code"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "code"
+              ]
+            }
+          ]
+        },
+        "localized": {
+          "type": "cds.Association",
+          "target": "sap.common.Languages.texts",
+          "on": [
+            {
+              "ref": [
+                "localized",
+                "code"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "code"
+              ]
+            },
+            "and",
+            {
+              "ref": [
+                "localized",
+                "locale"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$user",
+                "locale"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "sap.common.Countries": {
+      "kind": "entity",
+      "@cds.autoexpose": true,
+      "@cds.persistence.skip": "if-unused",
+      "@UI.Identification": [
+        {
+          "Value": {
+            "=": "name"
+          }
+        }
+      ],
+      "@cds.odata.valuelist": true,
+      "includes": [
+        "sap.common.CodeList"
+      ],
+      "elements": {
+        "name": {
+          "@title": "{i18n>Name}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@title": "{i18n>Description}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@title": "{i18n>CountryCode}",
+          "@Common.Text": {
+            "=": "name"
+          },
+          "key": true,
+          "type": "cds.String",
+          "length": 3
+        },
+        "texts": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "sap.common.Countries.texts",
+          "on": [
+            {
+              "ref": [
+                "texts",
+                "code"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "code"
+              ]
+            }
+          ]
+        },
+        "localized": {
+          "type": "cds.Association",
+          "target": "sap.common.Countries.texts",
+          "on": [
+            {
+              "ref": [
+                "localized",
+                "code"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "code"
+              ]
+            },
+            "and",
+            {
+              "ref": [
+                "localized",
+                "locale"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$user",
+                "locale"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "sap.common.Currencies": {
+      "kind": "entity",
+      "@cds.autoexpose": true,
+      "@cds.persistence.skip": "if-unused",
+      "@UI.Identification": [
+        {
+          "Value": {
+            "=": "name"
+          }
+        }
+      ],
+      "@cds.odata.valuelist": true,
+      "includes": [
+        "sap.common.CodeList"
+      ],
+      "elements": {
+        "name": {
+          "@title": "{i18n>Name}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@title": "{i18n>Description}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@title": "{i18n>CurrencyCode}",
+          "@Common.Text": {
+            "=": "name"
+          },
+          "key": true,
+          "type": "cds.String",
+          "length": 3
+        },
+        "symbol": {
+          "@title": "{i18n>CurrencySymbol}",
+          "type": "cds.String",
+          "length": 5
+        },
+        "texts": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "sap.common.Currencies.texts",
+          "on": [
+            {
+              "ref": [
+                "texts",
+                "code"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "code"
+              ]
+            }
+          ]
+        },
+        "localized": {
+          "type": "cds.Association",
+          "target": "sap.common.Currencies.texts",
+          "on": [
+            {
+              "ref": [
+                "localized",
+                "code"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "code"
+              ]
+            },
+            "and",
+            {
+              "ref": [
+                "localized",
+                "locale"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$user",
+                "locale"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "sap.common.CodeList": {
+      "kind": "aspect",
+      "@cds.autoexpose": true,
+      "@cds.persistence.skip": "if-unused",
+      "@UI.Identification": [
+        {
+          "Value": {
+            "=": "name"
+          }
+        }
+      ],
+      "@cds.odata.valuelist": true,
+      "elements": {
+        "name": {
+          "@title": "{i18n>Name}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@title": "{i18n>Description}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        }
+      }
+    },
+    "cuid": {
+      "kind": "aspect",
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        }
+      }
+    },
+    "managed": {
+      "kind": "aspect",
+      "elements": {
+        "createdAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedAt}",
+          "@readonly": true,
+          "@odata.on.insert": {
+            "#": "now"
+          },
+          "type": "cds.Timestamp"
+        },
+        "createdBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedBy}",
+          "@readonly": true,
+          "@odata.on.insert": {
+            "#": "user"
+          },
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "modifiedAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.on.update": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@title": "{i18n>ChangedAt}",
+          "@readonly": true,
+          "@odata.on.update": {
+            "#": "now"
+          },
+          "type": "cds.Timestamp"
+        },
+        "modifiedBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.on.update": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@title": "{i18n>ChangedBy}",
+          "@readonly": true,
+          "@odata.on.update": {
+            "#": "user"
+          },
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        }
+      }
+    },
+    "temporal": {
+      "kind": "aspect",
+      "elements": {
+        "validFrom": {
+          "@cds.valid.from": true,
+          "type": "cds.Timestamp"
+        },
+        "validTo": {
+          "@cds.valid.to": true,
+          "type": "cds.Timestamp"
+        }
+      }
+    },
+    "User": {
+      "kind": "type",
+      "@title": "{i18n>UserID}",
+      "@description": "{i18n>UserID.Description}",
+      "type": "cds.String",
+      "length": 255
+    },
+    "extensible": {
+      "kind": "aspect",
+      "elements": {
+        "extensions__": {
+          "@cds.api.ignore": true,
           "type": "cds.String"
         }
-      },
-      "returns": {
-        "type": "cds.String"
+      }
+    },
+    "dibyak.common.Gender": {
+      "kind": "type",
+      "type": "cds.String",
+      "length": 1,
+      "enum": {
+        "male": {
+          "val": "M"
+        },
+        "female": {
+          "val": "F"
+        },
+        "nonBinary": {
+          "val": "N"
+        },
+        "noDisclosure": {
+          "val": "D"
+        },
+        "selfDescribe": {
+          "val": "S"
+        }
+      }
+    },
+    "dibyak.common.AmountT": {
+      "kind": "type",
+      "@Semantics.amount.currencyCode": "CURRENCY_CODE",
+      "@sap.unit": "CURRENCY_CODE",
+      "type": "cds.Decimal",
+      "precision": 15,
+      "scale": 2
+    },
+    "dibyak.common.Amount": {
+      "kind": "aspect",
+      "elements": {
+        "Currency": {
+          "@title": "{i18n>Currency}",
+          "@description": "{i18n>CurrencyCode.Description}",
+          "type": "Currency",
+          "target": "sap.common.Currencies",
+          "keys": [
+            {
+              "ref": [
+                "code"
+              ]
+            }
+          ]
+        },
+        "GROSS_AMOUNT": {
+          "@Semantics.amount.currencyCode": "CURRENCY_CODE",
+          "@sap.unit": "CURRENCY_CODE",
+          "type": "dibyak.common.AmountT",
+          "precision": 15,
+          "scale": 2
+        },
+        "NET_AMOUNT": {
+          "@Semantics.amount.currencyCode": "CURRENCY_CODE",
+          "@sap.unit": "CURRENCY_CODE",
+          "type": "dibyak.common.AmountT",
+          "precision": 15,
+          "scale": 2
+        },
+        "TAX_AMOUNT": {
+          "@Semantics.amount.currencyCode": "CURRENCY_CODE",
+          "@sap.unit": "CURRENCY_CODE",
+          "type": "dibyak.common.AmountT",
+          "precision": 15,
+          "scale": 2
+        }
+      }
+    },
+    "dibyak.common.PhoneNumber": {
+      "kind": "type",
+      "@assert.format": "((?:\\+|00)[17](?: |\\-)?|(?:\\+|00)[1-9]\\d{0,2}(?: |\\-)?|(?:\\+|00)1\\-\\d{3}(?: |\\-)?)?(0\\d|\\([0-9]{3}\\)|[1-9]{0,3})(?:((?: |\\-)[0-9]{2}){4}|((?:[0-9]{2}){4})|((?: |\\-)[0-9]{3}(?: |\\-)[0-9]{4})|([0-9]{7}))",
+      "type": "cds.String",
+      "length": 30
+    },
+    "dibyak.common.Email": {
+      "kind": "type",
+      "@assert.format": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$",
+      "type": "cds.String",
+      "length": 255
+    },
+    "dibyak.db.master.product.texts": {
+      "kind": "entity",
+      "@odata.draft.enabled": false,
+      "elements": {
+        "locale": {
+          "key": true,
+          "type": "cds.String",
+          "length": 14
+        },
+        "NODE_KEY": {
+          "@odata.containment.ignore": true,
+          "@title": "{i18n>Prod_key1}",
+          "key": true,
+          "type": "dibyak.db.Guid",
+          "length": 32
+        },
+        "DESCRIPTION": {
+          "@title": "{i18n>Description}",
+          "localized": null,
+          "type": "cds.String",
+          "length": 255
+        }
+      }
+    },
+    "sap.common.Languages.texts": {
+      "kind": "entity",
+      "@odata.draft.enabled": false,
+      "elements": {
+        "locale": {
+          "key": true,
+          "type": "cds.String",
+          "length": 14
+        },
+        "name": {
+          "@title": "{i18n>Name}",
+          "localized": null,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@title": "{i18n>Description}",
+          "localized": null,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@odata.containment.ignore": true,
+          "@title": "{i18n>LanguageCode}",
+          "@Common.Text": {
+            "=": "name"
+          },
+          "key": true,
+          "type": "cds.String",
+          "length": 14
+        }
+      }
+    },
+    "sap.common.Countries.texts": {
+      "kind": "entity",
+      "@odata.draft.enabled": false,
+      "elements": {
+        "locale": {
+          "key": true,
+          "type": "cds.String",
+          "length": 14
+        },
+        "name": {
+          "@title": "{i18n>Name}",
+          "localized": null,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@title": "{i18n>Description}",
+          "localized": null,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@odata.containment.ignore": true,
+          "@title": "{i18n>CountryCode}",
+          "@Common.Text": {
+            "=": "name"
+          },
+          "key": true,
+          "type": "cds.String",
+          "length": 3
+        }
+      }
+    },
+    "sap.common.Currencies.texts": {
+      "kind": "entity",
+      "@odata.draft.enabled": false,
+      "elements": {
+        "locale": {
+          "key": true,
+          "type": "cds.String",
+          "length": 14
+        },
+        "name": {
+          "@title": "{i18n>Name}",
+          "localized": null,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@title": "{i18n>Description}",
+          "localized": null,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@odata.containment.ignore": true,
+          "@title": "{i18n>CurrencyCode}",
+          "@Common.Text": {
+            "=": "name"
+          },
+          "key": true,
+          "type": "cds.String",
+          "length": 3
+        }
       }
     }
   },
+  "extensions": [
+    {
+      "annotate": "dibyak.db.master.prodtext",
+      "elements": {
+        "NODE_KEY": {
+          "@title": "{i18n>prod_Key}"
+        },
+        "PARENT_KEY": {
+          "@title": "{i18n>Parent_Key}"
+        },
+        "LANGUAGE": {
+          "@title": "{i18n>Language}"
+        },
+        "TEXT": {
+          "@title": "{i18n>Text}"
+        }
+      }
+    },
+    {
+      "annotate": "dibyak.db.transaction.poitems",
+      "elements": {
+        "NODE_KEY": {
+          "@title": "{i18n>Node_KEy}"
+        },
+        "CURRENCY_CODE": {
+          "@title": "{i18n>CURRENCY_CODE}"
+        }
+      }
+    },
+    {
+      "annotate": "dibyak.db.transaction.purchaseorder",
+      "elements": {
+        "NODE_KEY": {
+          "@title": "{i18n>Node_KEy}"
+        },
+        "CURRENCY_CODE": {
+          "@title": "{i18n>CURRENCY_CODE}"
+        }
+      }
+    }
+  ],
   "meta": {
     "creator": "CDS Compiler v2.11.4",
     "flavor": "inferred"
