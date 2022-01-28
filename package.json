@@ -7,11 +7,14 @@
     "private": true,
     "dependencies": {
         "@sap/cds": "^5",
+        "@sap/hdbext": "^7.5.0",
         "express": "^4",
-        "hdb": "^0.18.3"
+        "hdb": "^0.18.3",
+        "sap-hdbext-promisfied": "^2.202201.1"
     },
     "scripts": {
-        "start": "cds run"
+        "start": "cds run",
+        "undeploy": "cf undeploy capmproject2 --delete-services --delete-service-keys"
     },
     "eslintConfig": {
         "extends": "eslint:recommended",
@@ -52,6 +55,10 @@
         }
     },
     "devDependencies": {
-        "@sap/hdi-deploy": "^4.2.3"
+        "@sap/eslint-plugin-ui5-jsdocs": "^2.0.5",
+        "@sap/hdi-deploy": "^4.2.3",
+        "@sap/ux-specification": "^1.96.2",
+        "@sapui5/ts-types": "^1.92.2",
+        "eslint": "^7.32.0"
     }
 }

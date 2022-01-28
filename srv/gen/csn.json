@@ -1,5 +1,916 @@
 {
   "definitions": {
+    "CatalogService": {
+      "@source": "CatalogService.cds",
+      "kind": "service",
+      "@path": "/CatalogService"
+    },
+    "CatalogService.EmployeeSet": {
+      "kind": "entity",
+      "projection": {
+        "from": {
+          "ref": [
+            "dibyak.db.master.employees"
+          ]
+        }
+      },
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "nameFirst": {
+          "@title": "{i18n>nameFirst}",
+          "type": "cds.String",
+          "length": 40
+        },
+        "nameMiddle": {
+          "@title": "{i18n>nameMiddle}",
+          "type": "cds.String",
+          "length": 40
+        },
+        "nameLast": {
+          "@title": "{i18n>nameLast}",
+          "type": "cds.String",
+          "length": 40
+        },
+        "nameInitials": {
+          "@title": "{i18n>nameInitials}",
+          "type": "cds.String",
+          "length": 40
+        },
+        "sex": {
+          "@title": "{i18n>sex}",
+          "type": "dibyak.common.Gender",
+          "length": 1
+        },
+        "language": {
+          "@title": "{i18n>language}",
+          "type": "cds.String",
+          "length": 1
+        },
+        "phoneNumber": {
+          "@title": "{i18n>phoneNumber}",
+          "@assert.format": "((?:\\+|00)[17](?: |\\-)?|(?:\\+|00)[1-9]\\d{0,2}(?: |\\-)?|(?:\\+|00)1\\-\\d{3}(?: |\\-)?)?(0\\d|\\([0-9]{3}\\)|[1-9]{0,3})(?:((?: |\\-)[0-9]{2}){4}|((?:[0-9]{2}){4})|((?: |\\-)[0-9]{3}(?: |\\-)[0-9]{4})|([0-9]{7}))",
+          "type": "dibyak.common.PhoneNumber",
+          "length": 30
+        },
+        "email": {
+          "@title": "{i18n>email}",
+          "@assert.format": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$",
+          "type": "dibyak.common.Email",
+          "length": 255
+        },
+        "loginName": {
+          "@title": "{i18n>loginName}",
+          "type": "cds.String",
+          "length": 12
+        },
+        "Currency": {
+          "@title": "{i18n>Currency}",
+          "@description": "{i18n>CurrencyCode.Description}",
+          "type": "Currency",
+          "target": "CatalogService.Currencies",
+          "keys": [
+            {
+              "ref": [
+                "code"
+              ]
+            }
+          ]
+        },
+        "salaryAmount": {
+          "@title": "{i18n>salaryAmount}",
+          "@Semantics.amount.currencyCode": "CURRENCY_CODE",
+          "@sap.unit": "CURRENCY_CODE",
+          "type": "dibyak.common.AmountT",
+          "precision": 15,
+          "scale": 2
+        },
+        "accountNumber": {
+          "@title": "{i18n>accountNumber}",
+          "type": "cds.String",
+          "length": 16
+        },
+        "bankId": {
+          "@title": "{i18n>bankId}",
+          "type": "cds.String",
+          "length": 20
+        },
+        "bankName": {
+          "@title": "{i18n>bankName}",
+          "type": "cds.String",
+          "length": 64
+        }
+      }
+    },
+    "CatalogService.AddressSet": {
+      "kind": "entity",
+      "projection": {
+        "from": {
+          "ref": [
+            "dibyak.db.master.address"
+          ]
+        }
+      },
+      "elements": {
+        "NODE_KEY": {
+          "@title": "{i18n>ap_key1}",
+          "key": true,
+          "type": "Guid",
+          "length": 32
+        },
+        "CITY": {
+          "@title": "{i18n>City}",
+          "type": "cds.String",
+          "length": 44
+        },
+        "POSTAL_CODE": {
+          "@title": "{i18n>Postal_Code}",
+          "type": "cds.String",
+          "length": 8
+        },
+        "STREET": {
+          "@title": "{i18n>Street}",
+          "type": "cds.String",
+          "length": 44
+        },
+        "BUILDING": {
+          "@title": "{i18n>Building}",
+          "type": "cds.String",
+          "length": 128
+        },
+        "COUNTRY": {
+          "@title": "{i18n>Country}",
+          "type": "cds.String",
+          "length": 44
+        },
+        "ADDRESS_TYPE": {
+          "@title": "{i18n>Address_Type}",
+          "type": "cds.String",
+          "length": 44
+        },
+        "VAL_START_DATE": {
+          "@title": "{i18n>VAL_START_DATE}",
+          "type": "cds.Date"
+        },
+        "VAL_END_DATE": {
+          "@title": "{i18n>VAL_END_DATE}",
+          "type": "cds.Date"
+        },
+        "LATITUDE": {
+          "@title": "{i18n>LATITUDE}",
+          "type": "cds.Decimal"
+        },
+        "LONGITUDE": {
+          "@title": "{i18n>LONGITUDE}",
+          "type": "cds.Decimal"
+        },
+        "businesspartner": {
+          "@title": "{i18n>businesspartner}",
+          "type": "cds.Association",
+          "cardinality": {
+            "max": 1
+          },
+          "target": "CatalogService.BPSet",
+          "on": [
+            {
+              "ref": [
+                "businesspartner",
+                "ADDRESS_GUID"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "CatalogService.ProductSet": {
+      "kind": "entity",
+      "projection": {
+        "from": {
+          "ref": [
+            "dibyak.db.master.product"
+          ]
+        }
+      },
+      "elements": {
+        "NODE_KEY": {
+          "@title": "{i18n>Prod_key1}",
+          "key": true,
+          "type": "Guid",
+          "length": 32
+        },
+        "PRODUCT_ID": {
+          "@title": "{i18n>Product_Id}",
+          "type": "cds.String",
+          "length": 28
+        },
+        "TYPE_CODE": {
+          "@title": "{i18n>Type_Code}",
+          "type": "cds.String",
+          "length": 2
+        },
+        "CATEGORY": {
+          "@title": "{i18n>Category}",
+          "type": "cds.String",
+          "length": 32
+        },
+        "DESCRIPTION": {
+          "@title": "{i18n>Description}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "SUPPLIER_GUID": {
+          "@title": "{i18n>Supplier_Guid}",
+          "type": "cds.Association",
+          "target": "CatalogService.BPSet",
+          "keys": [
+            {
+              "ref": [
+                "NODE_KEY"
+              ]
+            }
+          ]
+        },
+        "TAX_TARIF_CODE": {
+          "@title": "{i18n>Tax_Tarif_Code}",
+          "type": "cds.Integer"
+        },
+        "MEASURE_UNIT": {
+          "@title": "{i18n>Measure_Unit}",
+          "type": "cds.String",
+          "length": 2
+        },
+        "WEIGHT_MEASURE": {
+          "@title": "{i18n>Weight_Measure}",
+          "type": "cds.Decimal"
+        },
+        "WEIGHT_UNIT": {
+          "@title": "{i18n>Weight_Unit}",
+          "type": "cds.String",
+          "length": 2
+        },
+        "CURRENCY_CODE": {
+          "@title": "{i18n>Currency_Code}",
+          "type": "cds.String",
+          "length": 4
+        },
+        "PRICE": {
+          "@title": "{i18n>Price}",
+          "type": "cds.Decimal",
+          "precision": 15,
+          "scale": 2
+        },
+        "WIDTH": {
+          "@title": "{i18n>Width}",
+          "type": "cds.Decimal"
+        },
+        "DEPTH": {
+          "@title": "{i18n>Depth}",
+          "type": "cds.Decimal"
+        },
+        "HEIGHT": {
+          "@title": "{i18n>Height}",
+          "type": "cds.Decimal"
+        },
+        "DIM_UNIT": {
+          "@title": "{i18n>Dim_Unit}",
+          "type": "cds.String",
+          "length": 2
+        },
+        "texts": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "CatalogService.ProductSet.texts",
+          "on": [
+            {
+              "ref": [
+                "texts",
+                "NODE_KEY"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "NODE_KEY"
+              ]
+            }
+          ]
+        },
+        "localized": {
+          "type": "cds.Association",
+          "target": "CatalogService.ProductSet.texts",
+          "on": [
+            {
+              "ref": [
+                "localized",
+                "NODE_KEY"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "NODE_KEY"
+              ]
+            },
+            "and",
+            {
+              "ref": [
+                "localized",
+                "locale"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$user",
+                "locale"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "CatalogService.BPSet": {
+      "kind": "entity",
+      "projection": {
+        "from": {
+          "ref": [
+            "dibyak.db.master.businesspartner"
+          ]
+        }
+      },
+      "elements": {
+        "NODE_KEY": {
+          "@title": "{i18n>bp_key}",
+          "key": true,
+          "type": "Guid",
+          "length": 32
+        },
+        "BP_ROLE": {
+          "@title": "{i18n>bp_role}",
+          "type": "cds.String",
+          "length": 2
+        },
+        "EMAIL_ADDRESS": {
+          "@title": "{i18n>email_addr}",
+          "type": "cds.String",
+          "length": 105
+        },
+        "PHONE_NUMBER": {
+          "@title": "{i18n>Phone_Number}",
+          "type": "cds.String",
+          "length": 32
+        },
+        "FAX_NUMBER": {
+          "@title": "{i18n>Fax_Number}",
+          "type": "cds.String",
+          "length": 32
+        },
+        "WEB_ADDRESS": {
+          "@title": "{i18n>WEB_ADDRESS}",
+          "type": "cds.String",
+          "length": 44
+        },
+        "ADDRESS_GUID": {
+          "@title": "{i18n>Address_Guid}",
+          "type": "cds.Association",
+          "target": "CatalogService.AddressSet",
+          "keys": [
+            {
+              "ref": [
+                "NODE_KEY"
+              ]
+            }
+          ]
+        },
+        "BP_ID": {
+          "@title": "{i18n>bp_id}",
+          "type": "cds.String",
+          "length": 32
+        },
+        "COMPANY_NAME": {
+          "@title": "{i18n>company_name}",
+          "type": "cds.String",
+          "length": 250
+        }
+      }
+    },
+    "CatalogService.POs": {
+      "kind": "entity",
+      "@title": "{i18n>poHeader}",
+      "projection": {
+        "from": {
+          "ref": [
+            "dibyak.db.transaction.purchaseorder"
+          ]
+        },
+        "columns": [
+          "*",
+          {
+            "ref": [
+              "Items"
+            ],
+            "cast": {
+              "target": "CatalogService.POItems"
+            }
+          }
+        ]
+      },
+      "elements": {
+        "Currency": {
+          "@title": "{i18n>Currency}",
+          "@description": "{i18n>CurrencyCode.Description}",
+          "type": "Currency",
+          "target": "CatalogService.Currencies",
+          "keys": [
+            {
+              "ref": [
+                "code"
+              ]
+            }
+          ]
+        },
+        "GROSS_AMOUNT": {
+          "@title": "{i18n>GROSS_AMOUNT}",
+          "@Semantics.amount.currencyCode": "CURRENCY_CODE",
+          "@sap.unit": "CURRENCY_CODE",
+          "type": "dibyak.common.AmountT",
+          "precision": 15,
+          "scale": 2
+        },
+        "NET_AMOUNT": {
+          "@title": "{i18n>NET_AMOUNT}",
+          "@Semantics.amount.currencyCode": "CURRENCY_CODE",
+          "@sap.unit": "CURRENCY_CODE",
+          "type": "dibyak.common.AmountT",
+          "precision": 15,
+          "scale": 2
+        },
+        "TAX_AMOUNT": {
+          "@title": "{i18n>TAX_AMOUNT}",
+          "@Semantics.amount.currencyCode": "CURRENCY_CODE",
+          "@sap.unit": "CURRENCY_CODE",
+          "type": "dibyak.common.AmountT",
+          "precision": 15,
+          "scale": 2
+        },
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "PO_ID": {
+          "@title": "{i18n>PO_ID}",
+          "type": "cds.Integer"
+        },
+        "PARTNER_GUID": {
+          "@title": "{i18n>PARTNER_GUID}",
+          "type": "cds.Association",
+          "target": "CatalogService.BPSet",
+          "keys": [
+            {
+              "ref": [
+                "NODE_KEY"
+              ]
+            }
+          ]
+        },
+        "LIFECYCLE_STATUS": {
+          "@title": "{i18n>LIFECYCLE_STATUS}",
+          "type": "cds.String",
+          "length": 1
+        },
+        "OVERALL_STATUS": {
+          "@title": "{i18n>OVERALL_STATUS}",
+          "type": "cds.String",
+          "length": 1
+        },
+        "Items": {
+          "@title": "{i18n>Items}",
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "CatalogService.POItems",
+          "on": [
+            {
+              "ref": [
+                "Items",
+                "PARENT_KEY"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        },
+        "NOTE": {
+          "type": "cds.String",
+          "length": 256
+        },
+        "CREATEDBY": {
+          "type": "cds.UUID"
+        },
+        "MODIFIEDBY": {
+          "type": "cds.UUID"
+        },
+        "CREATEDAT": {
+          "type": "cds.Date"
+        },
+        "MODIFIEDAT": {
+          "type": "cds.Date"
+        }
+      }
+    },
+    "CatalogService.POItems": {
+      "kind": "entity",
+      "@title": "{i18n>poItems}",
+      "projection": {
+        "from": {
+          "ref": [
+            "dibyak.db.transaction.poitems"
+          ]
+        },
+        "columns": [
+          "*",
+          {
+            "ref": [
+              "PARENT_KEY"
+            ],
+            "cast": {
+              "target": "CatalogService.POs"
+            }
+          },
+          {
+            "ref": [
+              "PRODUCT_GUID"
+            ],
+            "cast": {
+              "target": "CatalogService.ProductSet"
+            }
+          }
+        ]
+      },
+      "elements": {
+        "Currency": {
+          "@title": "{i18n>Currency}",
+          "@description": "{i18n>CurrencyCode.Description}",
+          "type": "Currency",
+          "target": "CatalogService.Currencies",
+          "keys": [
+            {
+              "ref": [
+                "code"
+              ]
+            }
+          ]
+        },
+        "GROSS_AMOUNT": {
+          "@title": "{i18n>GROSS_AMOUNT}",
+          "@Semantics.amount.currencyCode": "CURRENCY_CODE",
+          "@sap.unit": "CURRENCY_CODE",
+          "type": "dibyak.common.AmountT",
+          "precision": 15,
+          "scale": 2
+        },
+        "NET_AMOUNT": {
+          "@title": "{i18n>NET_AMOUNT}",
+          "@Semantics.amount.currencyCode": "CURRENCY_CODE",
+          "@sap.unit": "CURRENCY_CODE",
+          "type": "dibyak.common.AmountT",
+          "precision": 15,
+          "scale": 2
+        },
+        "TAX_AMOUNT": {
+          "@title": "{i18n>TAX_AMOUNT}",
+          "@Semantics.amount.currencyCode": "CURRENCY_CODE",
+          "@sap.unit": "CURRENCY_CODE",
+          "type": "dibyak.common.AmountT",
+          "precision": 15,
+          "scale": 2
+        },
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "PARENT_KEY": {
+          "@title": "{i18n>PARENT_KEY}",
+          "type": "cds.Association",
+          "target": "CatalogService.POs",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "PO_ITEM_POS": {
+          "@title": "{i18n>PO_ITEM_POS}",
+          "type": "cds.Integer"
+        },
+        "PRODUCT_GUID": {
+          "@title": "{i18n>PRODUCT_GUID}",
+          "type": "cds.Association",
+          "target": "CatalogService.ProductSet",
+          "keys": [
+            {
+              "ref": [
+                "NODE_KEY"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "CatalogService.POWorklist": {
+      "kind": "entity",
+      "projection": {
+        "from": {
+          "ref": [
+            "dibyak.db.CDSViews.POWorklist"
+          ]
+        }
+      },
+      "elements": {
+        "PurchaseOrderId": {
+          "@title": "{i18n>PO_ID}",
+          "key": true,
+          "type": "cds.Integer"
+        },
+        "PartnerId": {
+          "@title": "{i18n>bp_id}",
+          "type": "cds.String",
+          "length": 32
+        },
+        "CompanyName": {
+          "@title": "{i18n>company_name}",
+          "type": "cds.String",
+          "length": 250
+        },
+        "POGrossAmount": {
+          "@title": "{i18n>GROSS_AMOUNT}",
+          "@Semantics.amount.currencyCode": "CURRENCY_CODE",
+          "@sap.unit": "CURRENCY_CODE",
+          "type": "dibyak.common.AmountT",
+          "precision": 15,
+          "scale": 2
+        },
+        "POCurrencyCode": {
+          "@title": "{i18n>CurrencyCode}",
+          "@Common.Text": {
+            "=": "name"
+          },
+          "type": "cds.String",
+          "length": 3
+        },
+        "POStatus": {
+          "@title": "{i18n>LIFECYCLE_STATUS}",
+          "type": "cds.String",
+          "length": 1
+        },
+        "ItemPosition": {
+          "@title": "{i18n>PO_ITEM_POS}",
+          "key": true,
+          "type": "cds.Integer"
+        },
+        "ProductId": {
+          "@title": "{i18n>Product_Id}",
+          "type": "cds.String",
+          "length": 28
+        },
+        "ProductName": {
+          "@title": "{i18n>Description}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "City": {
+          "@title": "{i18n>City}",
+          "type": "cds.String",
+          "length": 44
+        },
+        "Country": {
+          "@title": "{i18n>Country}",
+          "type": "cds.String",
+          "length": 44
+        },
+        "GrossAmount": {
+          "@title": "{i18n>GROSS_AMOUNT}",
+          "@Semantics.amount.currencyCode": "CURRENCY_CODE",
+          "@sap.unit": "CURRENCY_CODE",
+          "type": "dibyak.common.AmountT",
+          "precision": 15,
+          "scale": 2
+        },
+        "NetAmount": {
+          "@title": "{i18n>NET_AMOUNT}",
+          "@Semantics.amount.currencyCode": "CURRENCY_CODE",
+          "@sap.unit": "CURRENCY_CODE",
+          "type": "dibyak.common.AmountT",
+          "precision": 15,
+          "scale": 2
+        },
+        "TaxAmount": {
+          "@title": "{i18n>TAX_AMOUNT}",
+          "@Semantics.amount.currencyCode": "CURRENCY_CODE",
+          "@sap.unit": "CURRENCY_CODE",
+          "type": "dibyak.common.AmountT",
+          "precision": 15,
+          "scale": 2
+        },
+        "CurrencyCode": {
+          "@title": "{i18n>CurrencyCode}",
+          "@Common.Text": {
+            "=": "name"
+          },
+          "type": "cds.String",
+          "length": 3
+        }
+      }
+    },
+    "CatalogService.ProductOrders": {
+      "kind": "entity",
+      "projection": {
+        "from": {
+          "ref": [
+            "dibyak.db.CDSViews.ProductViewSub"
+          ]
+        }
+      },
+      "elements": {
+        "ProductId": {
+          "@title": "{i18n>Product_Id}",
+          "type": "cds.String",
+          "length": 28
+        },
+        "Description": {
+          "@title": "{i18n>Description}",
+          "localized": null,
+          "type": "cds.String",
+          "length": 255
+        },
+        "PO_SUM": {
+          "@Core.Computed": true,
+          "type": "cds.Decimal",
+          "precision": 10,
+          "scale": 2
+        }
+      }
+    },
+    "CatalogService.ProductAggregation": {
+      "kind": "entity",
+      "projection": {
+        "from": {
+          "ref": [
+            "dibyak.db.CDSViews.CProductValuesView"
+          ]
+        },
+        "excluding": [
+          "ProductId"
+        ]
+      },
+      "elements": {
+        "Country": {
+          "@title": "{i18n>Country}",
+          "type": "cds.String",
+          "length": 44
+        },
+        "CurrencyCode": {
+          "@title": "{i18n>CurrencyCode}",
+          "@Common.Text": {
+            "=": "name"
+          },
+          "type": "cds.String",
+          "length": 3
+        },
+        "POGrossAmount": {
+          "@Core.Computed": true,
+          "type": "cds.Decimal",
+          "precision": 10,
+          "scale": 2
+        }
+      }
+    },
+    "CatalogService.sleep": {
+      "kind": "function",
+      "returns": {
+        "type": "cds.Boolean"
+      }
+    },
+    "CatalogService.PurchaseOrders": {
+      "kind": "entity",
+      "projection": {
+        "from": {
+          "ref": [
+            "CV_PURC"
+          ]
+        }
+      },
+      "elements": {
+        "NODE_KEY": {
+          "@title": "NODE_KEY: NODE_KEY",
+          "key": true,
+          "type": "cds.String",
+          "length": 32
+        },
+        "BP_ROLE": {
+          "@title": "BP_ROLE: BP_ROLE",
+          "key": true,
+          "type": "cds.String",
+          "length": 2
+        },
+        "BP_ID": {
+          "@title": "BP_ID: BP_ID",
+          "key": true,
+          "type": "cds.String",
+          "length": 250
+        },
+        "CITY": {
+          "@title": "CITY: CITY",
+          "key": true,
+          "type": "cds.String",
+          "length": 44
+        },
+        "STREET": {
+          "@title": "STREET: STREET",
+          "key": true,
+          "type": "cds.String",
+          "length": 44
+        },
+        "ID": {
+          "@title": "ID: ID",
+          "key": true,
+          "type": "cds.String",
+          "length": 36
+        },
+        "OVERALL_STATUS": {
+          "@title": "OVERALL_STATUS: OVERALL_STATUS",
+          "key": true,
+          "type": "cds.String",
+          "length": 1
+        },
+        "LIFECYCLE_STATUS": {
+          "@title": "LIFECYCLE_STATUS: LIFECYCLE_STATUS",
+          "key": true,
+          "type": "cds.String",
+          "length": 1
+        },
+        "CURRENCY_CODE": {
+          "@title": "CURRENCY_CODE: CURRENCY_CODE",
+          "key": true,
+          "type": "cds.String",
+          "length": 3
+        },
+        "PARTNER_GUID_NODE_KEY": {
+          "@title": "PARTNER_GUID_NODE_KEY: PARTNER_GUID_NODE_KEY",
+          "key": true,
+          "type": "cds.String",
+          "length": 32
+        },
+        "PO_ID": {
+          "@title": "PO_ID: PO_ID",
+          "key": true,
+          "type": "cds.Integer"
+        },
+        "PO_ITEM_POS": {
+          "@title": "PO_ITEM_POS: PO_ITEM_POS",
+          "key": true,
+          "type": "cds.Integer"
+        },
+        "NET_AMOUNT": {
+          "@title": "NET_AMOUNT: NET_AMOUNT",
+          "key": true,
+          "type": "cds.Decimal",
+          "precision": 15,
+          "scale": 2
+        },
+        "PO_ITEM_POS_1": {
+          "@title": "PO_ITEM_POS_1: PO_ITEM_POS_1",
+          "key": true,
+          "type": "cds.Integer"
+        },
+        "TAX_AMOUNT": {
+          "@title": "TAX_AMOUNT: TAX_AMOUNT",
+          "key": true,
+          "type": "cds.Decimal",
+          "precision": 15,
+          "scale": 2
+        }
+      }
+    },
     "mysrv": {
       "@source": "interaction_srv.cds",
       "kind": "service"
@@ -15,10 +926,13 @@
         "type": "cds.String"
       }
     },
-    "dibyak.db.Guid": {
+    "Guid": {
       "kind": "type",
       "type": "cds.String",
       "length": 32
+    },
+    "dibyak.db": {
+      "kind": "context"
     },
     "dibyak.db.master": {
       "kind": "context"
@@ -29,7 +943,7 @@
         "NODE_KEY": {
           "@title": "{i18n>bp_key}",
           "key": true,
-          "type": "dibyak.db.Guid",
+          "type": "Guid",
           "length": 32
         },
         "BP_ROLE": {
@@ -87,7 +1001,7 @@
         "NODE_KEY": {
           "@title": "{i18n>ap_key1}",
           "key": true,
-          "type": "dibyak.db.Guid",
+          "type": "Guid",
           "length": 32
         },
         "CITY": {
@@ -166,7 +1080,7 @@
         "NODE_KEY": {
           "@title": "{i18n>Prod_key1}",
           "key": true,
-          "type": "dibyak.db.Guid",
+          "type": "Guid",
           "length": 32
         },
         "PRODUCT_ID": {
@@ -590,6 +1504,869 @@
               ]
             }
           ]
+        }
+      }
+    },
+    "dibyak.db.CDSViews": {
+      "kind": "context"
+    },
+    "dibyak.db.CDSViews.POWorklist": {
+      "kind": "entity",
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": [
+              "dibyak.db.transaction.purchaseorder"
+            ]
+          },
+          "columns": [
+            {
+              "key": true,
+              "ref": [
+                "PO_ID"
+              ],
+              "as": "PurchaseOrderId"
+            },
+            {
+              "ref": [
+                "PARTNER_GUID",
+                "BP_ID"
+              ],
+              "as": "PartnerId"
+            },
+            {
+              "ref": [
+                "PARTNER_GUID",
+                "COMPANY_NAME"
+              ],
+              "as": "CompanyName"
+            },
+            {
+              "ref": [
+                "GROSS_AMOUNT"
+              ],
+              "as": "POGrossAmount"
+            },
+            {
+              "ref": [
+                "Currency",
+                "code"
+              ],
+              "as": "POCurrencyCode"
+            },
+            {
+              "ref": [
+                "LIFECYCLE_STATUS"
+              ],
+              "as": "POStatus"
+            },
+            {
+              "key": true,
+              "ref": [
+                "Items",
+                "PO_ITEM_POS"
+              ],
+              "as": "ItemPosition"
+            },
+            {
+              "ref": [
+                "Items",
+                "PRODUCT_GUID",
+                "PRODUCT_ID"
+              ],
+              "as": "ProductId"
+            },
+            {
+              "ref": [
+                "Items",
+                "PRODUCT_GUID",
+                "DESCRIPTION"
+              ],
+              "as": "ProductName"
+            },
+            {
+              "ref": [
+                "PARTNER_GUID",
+                "ADDRESS_GUID",
+                "CITY"
+              ],
+              "as": "City"
+            },
+            {
+              "ref": [
+                "PARTNER_GUID",
+                "ADDRESS_GUID",
+                "COUNTRY"
+              ],
+              "as": "Country"
+            },
+            {
+              "ref": [
+                "Items",
+                "GROSS_AMOUNT"
+              ],
+              "as": "GrossAmount"
+            },
+            {
+              "ref": [
+                "Items",
+                "NET_AMOUNT"
+              ],
+              "as": "NetAmount"
+            },
+            {
+              "ref": [
+                "Items",
+                "TAX_AMOUNT"
+              ],
+              "as": "TaxAmount"
+            },
+            {
+              "ref": [
+                "Items",
+                "Currency",
+                "code"
+              ],
+              "as": "CurrencyCode"
+            }
+          ]
+        }
+      },
+      "elements": {
+        "PurchaseOrderId": {
+          "@title": "{i18n>PO_ID}",
+          "key": true,
+          "type": "cds.Integer"
+        },
+        "PartnerId": {
+          "@title": "{i18n>bp_id}",
+          "type": "cds.String",
+          "length": 32
+        },
+        "CompanyName": {
+          "@title": "{i18n>company_name}",
+          "type": "cds.String",
+          "length": 250
+        },
+        "POGrossAmount": {
+          "@title": "{i18n>GROSS_AMOUNT}",
+          "@Semantics.amount.currencyCode": "CURRENCY_CODE",
+          "@sap.unit": "CURRENCY_CODE",
+          "type": "dibyak.common.AmountT",
+          "precision": 15,
+          "scale": 2
+        },
+        "POCurrencyCode": {
+          "@title": "{i18n>CurrencyCode}",
+          "@Common.Text": {
+            "=": "name"
+          },
+          "type": "cds.String",
+          "length": 3
+        },
+        "POStatus": {
+          "@title": "{i18n>LIFECYCLE_STATUS}",
+          "type": "cds.String",
+          "length": 1
+        },
+        "ItemPosition": {
+          "@title": "{i18n>PO_ITEM_POS}",
+          "key": true,
+          "type": "cds.Integer"
+        },
+        "ProductId": {
+          "@title": "{i18n>Product_Id}",
+          "type": "cds.String",
+          "length": 28
+        },
+        "ProductName": {
+          "@title": "{i18n>Description}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "City": {
+          "@title": "{i18n>City}",
+          "type": "cds.String",
+          "length": 44
+        },
+        "Country": {
+          "@title": "{i18n>Country}",
+          "type": "cds.String",
+          "length": 44
+        },
+        "GrossAmount": {
+          "@title": "{i18n>GROSS_AMOUNT}",
+          "@Semantics.amount.currencyCode": "CURRENCY_CODE",
+          "@sap.unit": "CURRENCY_CODE",
+          "type": "dibyak.common.AmountT",
+          "precision": 15,
+          "scale": 2
+        },
+        "NetAmount": {
+          "@title": "{i18n>NET_AMOUNT}",
+          "@Semantics.amount.currencyCode": "CURRENCY_CODE",
+          "@sap.unit": "CURRENCY_CODE",
+          "type": "dibyak.common.AmountT",
+          "precision": 15,
+          "scale": 2
+        },
+        "TaxAmount": {
+          "@title": "{i18n>TAX_AMOUNT}",
+          "@Semantics.amount.currencyCode": "CURRENCY_CODE",
+          "@sap.unit": "CURRENCY_CODE",
+          "type": "dibyak.common.AmountT",
+          "precision": 15,
+          "scale": 2
+        },
+        "CurrencyCode": {
+          "@title": "{i18n>CurrencyCode}",
+          "@Common.Text": {
+            "=": "name"
+          },
+          "type": "cds.String",
+          "length": 3
+        }
+      }
+    },
+    "dibyak.db.CDSViews.ProductValueHelp": {
+      "kind": "entity",
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": [
+              "dibyak.db.master.product"
+            ]
+          },
+          "columns": [
+            {
+              "ref": [
+                "PRODUCT_ID"
+              ],
+              "as": "ProductId"
+            },
+            {
+              "ref": [
+                "DESCRIPTION"
+              ],
+              "as": "Description"
+            }
+          ]
+        }
+      },
+      "elements": {
+        "ProductId": {
+          "@EndUserText.label": [
+            {
+              "language": "EN",
+              "text": "Product ID"
+            },
+            {
+              "language": "DE",
+              "text": "Prodekt ID"
+            }
+          ],
+          "@title": "{i18n>Product_Id}",
+          "type": "cds.String",
+          "length": 28
+        },
+        "Description": {
+          "@EndUserText.label": [
+            {
+              "language": "EN",
+              "text": "Product Description"
+            },
+            {
+              "language": "DE",
+              "text": "Prodekt Description"
+            }
+          ],
+          "@title": "{i18n>Description}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        }
+      }
+    },
+    "dibyak.db.CDSViews.ItemView": {
+      "kind": "entity",
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": [
+              "dibyak.db.transaction.poitems"
+            ]
+          },
+          "columns": [
+            {
+              "ref": [
+                "PARENT_KEY",
+                "PARTNER_GUID",
+                "NODE_KEY"
+              ],
+              "as": "Partner"
+            },
+            {
+              "ref": [
+                "PRODUCT_GUID",
+                "NODE_KEY"
+              ],
+              "as": "ProductId"
+            },
+            {
+              "ref": [
+                "Currency",
+                "code"
+              ],
+              "as": "CurrencyCode"
+            },
+            {
+              "ref": [
+                "GROSS_AMOUNT"
+              ],
+              "as": "GrossAmount"
+            },
+            {
+              "ref": [
+                "NET_AMOUNT"
+              ],
+              "as": "NetAmount"
+            },
+            {
+              "ref": [
+                "TAX_AMOUNT"
+              ],
+              "as": "TaxAmount"
+            },
+            {
+              "ref": [
+                "PARENT_KEY",
+                "OVERALL_STATUS"
+              ],
+              "as": "POStatus"
+            }
+          ]
+        }
+      },
+      "elements": {
+        "Partner": {
+          "@title": "{i18n>bp_key}",
+          "type": "Guid",
+          "length": 32
+        },
+        "ProductId": {
+          "@title": "{i18n>Prod_key1}",
+          "type": "Guid",
+          "length": 32
+        },
+        "CurrencyCode": {
+          "@title": "{i18n>CurrencyCode}",
+          "@Common.Text": {
+            "=": "name"
+          },
+          "type": "cds.String",
+          "length": 3
+        },
+        "GrossAmount": {
+          "@title": "{i18n>GROSS_AMOUNT}",
+          "@Semantics.amount.currencyCode": "CURRENCY_CODE",
+          "@sap.unit": "CURRENCY_CODE",
+          "type": "dibyak.common.AmountT",
+          "precision": 15,
+          "scale": 2
+        },
+        "NetAmount": {
+          "@title": "{i18n>NET_AMOUNT}",
+          "@Semantics.amount.currencyCode": "CURRENCY_CODE",
+          "@sap.unit": "CURRENCY_CODE",
+          "type": "dibyak.common.AmountT",
+          "precision": 15,
+          "scale": 2
+        },
+        "TaxAmount": {
+          "@title": "{i18n>TAX_AMOUNT}",
+          "@Semantics.amount.currencyCode": "CURRENCY_CODE",
+          "@sap.unit": "CURRENCY_CODE",
+          "type": "dibyak.common.AmountT",
+          "precision": 15,
+          "scale": 2
+        },
+        "POStatus": {
+          "@title": "{i18n>OVERALL_STATUS}",
+          "type": "cds.String",
+          "length": 1
+        }
+      }
+    },
+    "dibyak.db.CDSViews.ProductViewSub": {
+      "kind": "entity",
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": [
+              "dibyak.db.master.product"
+            ],
+            "as": "prod"
+          },
+          "columns": [
+            {
+              "ref": [
+                "PRODUCT_ID"
+              ],
+              "as": "ProductId"
+            },
+            {
+              "ref": [
+                "texts",
+                "DESCRIPTION"
+              ],
+              "as": "Description"
+            },
+            {
+              "SELECT": {
+                "from": {
+                  "ref": [
+                    "dibyak.db.transaction.poitems"
+                  ],
+                  "as": "a"
+                },
+                "columns": [
+                  {
+                    "func": "round",
+                    "args": [
+                      {
+                        "func": "SUM",
+                        "args": [
+                          {
+                            "ref": [
+                              "a",
+                              "GROSS_AMOUNT"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "val": 2
+                      }
+                    ],
+                    "as": "SUM"
+                  }
+                ],
+                "where": [
+                  {
+                    "ref": [
+                      "a",
+                      "PRODUCT_GUID",
+                      "NODE_KEY"
+                    ]
+                  },
+                  "=",
+                  {
+                    "ref": [
+                      "prod",
+                      "NODE_KEY"
+                    ]
+                  }
+                ]
+              },
+              "as": "PO_SUM",
+              "cast": {
+                "type": "cds.Decimal",
+                "precision": 10,
+                "scale": 2
+              }
+            }
+          ]
+        }
+      },
+      "elements": {
+        "ProductId": {
+          "@title": "{i18n>Product_Id}",
+          "type": "cds.String",
+          "length": 28
+        },
+        "Description": {
+          "@title": "{i18n>Description}",
+          "localized": null,
+          "type": "cds.String",
+          "length": 255
+        },
+        "PO_SUM": {
+          "@Core.Computed": true,
+          "type": "cds.Decimal",
+          "precision": 10,
+          "scale": 2
+        }
+      }
+    },
+    "dibyak.db.CDSViews.ProductView": {
+      "kind": "entity",
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": [
+              "dibyak.db.master.product"
+            ]
+          },
+          "mixin": {
+            "PO_ORDERS": {
+              "type": "cds.Association",
+              "cardinality": {
+                "max": "*"
+              },
+              "target": "dibyak.db.CDSViews.ItemView",
+              "on": [
+                {
+                  "ref": [
+                    "PO_ORDERS",
+                    "ProductId"
+                  ]
+                },
+                "=",
+                {
+                  "ref": [
+                    "$projection",
+                    "ProductId"
+                  ]
+                }
+              ]
+            }
+          },
+          "columns": [
+            {
+              "ref": [
+                "NODE_KEY"
+              ],
+              "as": "ProductId"
+            },
+            {
+              "ref": [
+                "DESCRIPTION"
+              ]
+            },
+            {
+              "ref": [
+                "CATEGORY"
+              ],
+              "as": "Category"
+            },
+            {
+              "ref": [
+                "PRICE"
+              ],
+              "as": "Price"
+            },
+            {
+              "ref": [
+                "TYPE_CODE"
+              ],
+              "as": "TypeCode"
+            },
+            {
+              "ref": [
+                "SUPPLIER_GUID",
+                "BP_ID"
+              ],
+              "as": "BPId"
+            },
+            {
+              "ref": [
+                "SUPPLIER_GUID",
+                "COMPANY_NAME"
+              ],
+              "as": "CompanyName"
+            },
+            {
+              "ref": [
+                "SUPPLIER_GUID",
+                "ADDRESS_GUID",
+                "CITY"
+              ],
+              "as": "City"
+            },
+            {
+              "ref": [
+                "SUPPLIER_GUID",
+                "ADDRESS_GUID",
+                "COUNTRY"
+              ],
+              "as": "Country"
+            },
+            {
+              "ref": [
+                "PO_ORDERS"
+              ]
+            }
+          ]
+        }
+      },
+      "elements": {
+        "ProductId": {
+          "@title": "{i18n>Prod_key1}",
+          "key": true,
+          "type": "Guid",
+          "length": 32
+        },
+        "DESCRIPTION": {
+          "@title": "{i18n>Description}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "Category": {
+          "@title": "{i18n>Category}",
+          "type": "cds.String",
+          "length": 32
+        },
+        "Price": {
+          "@title": "{i18n>Price}",
+          "type": "cds.Decimal",
+          "precision": 15,
+          "scale": 2
+        },
+        "TypeCode": {
+          "@title": "{i18n>Type_Code}",
+          "type": "cds.String",
+          "length": 2
+        },
+        "BPId": {
+          "@title": "{i18n>bp_id}",
+          "type": "cds.String",
+          "length": 32
+        },
+        "CompanyName": {
+          "@title": "{i18n>company_name}",
+          "type": "cds.String",
+          "length": 250
+        },
+        "City": {
+          "@title": "{i18n>City}",
+          "type": "cds.String",
+          "length": 44
+        },
+        "Country": {
+          "@title": "{i18n>Country}",
+          "type": "cds.String",
+          "length": 44
+        },
+        "PO_ORDERS": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "dibyak.db.CDSViews.ItemView",
+          "on": [
+            {
+              "ref": [
+                "PO_ORDERS",
+                "ProductId"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self",
+                "ProductId"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "dibyak.db.CDSViews.CProductValuesView": {
+      "kind": "entity",
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": [
+              "dibyak.db.CDSViews.ProductView"
+            ]
+          },
+          "columns": [
+            {
+              "ref": [
+                "ProductId"
+              ]
+            },
+            {
+              "ref": [
+                "Country"
+              ]
+            },
+            {
+              "ref": [
+                "PO_ORDERS",
+                "CurrencyCode"
+              ],
+              "as": "CurrencyCode"
+            },
+            {
+              "func": "round",
+              "args": [
+                {
+                  "func": "sum",
+                  "args": [
+                    {
+                      "ref": [
+                        "PO_ORDERS",
+                        "GrossAmount"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "val": 2
+                }
+              ],
+              "as": "POGrossAmount",
+              "cast": {
+                "type": "cds.Decimal",
+                "precision": 10,
+                "scale": 2
+              }
+            }
+          ],
+          "groupBy": [
+            {
+              "ref": [
+                "ProductId"
+              ]
+            },
+            {
+              "ref": [
+                "Country"
+              ]
+            },
+            {
+              "ref": [
+                "PO_ORDERS",
+                "CurrencyCode"
+              ]
+            }
+          ]
+        }
+      },
+      "elements": {
+        "ProductId": {
+          "@title": "{i18n>Prod_key1}",
+          "key": true,
+          "type": "Guid",
+          "length": 32
+        },
+        "Country": {
+          "@title": "{i18n>Country}",
+          "type": "cds.String",
+          "length": 44
+        },
+        "CurrencyCode": {
+          "@title": "{i18n>CurrencyCode}",
+          "@Common.Text": {
+            "=": "name"
+          },
+          "type": "cds.String",
+          "length": 3
+        },
+        "POGrossAmount": {
+          "@Core.Computed": true,
+          "type": "cds.Decimal",
+          "precision": 10,
+          "scale": 2
+        }
+      }
+    },
+    "CV_PURC": {
+      "kind": "entity",
+      "@cds.persistence.calcview": true,
+      "@cds.persistence.exists": true,
+      "elements": {
+        "NODE_KEY": {
+          "@title": "NODE_KEY: NODE_KEY",
+          "key": true,
+          "type": "cds.String",
+          "length": 32
+        },
+        "BP_ROLE": {
+          "@title": "BP_ROLE: BP_ROLE",
+          "key": true,
+          "type": "cds.String",
+          "length": 2
+        },
+        "BP_ID": {
+          "@title": "BP_ID: BP_ID",
+          "key": true,
+          "type": "cds.String",
+          "length": 250
+        },
+        "CITY": {
+          "@title": "CITY: CITY",
+          "key": true,
+          "type": "cds.String",
+          "length": 44
+        },
+        "STREET": {
+          "@title": "STREET: STREET",
+          "key": true,
+          "type": "cds.String",
+          "length": 44
+        },
+        "ID": {
+          "@title": "ID: ID",
+          "key": true,
+          "type": "cds.String",
+          "length": 36
+        },
+        "OVERALL_STATUS": {
+          "@title": "OVERALL_STATUS: OVERALL_STATUS",
+          "key": true,
+          "type": "cds.String",
+          "length": 1
+        },
+        "LIFECYCLE_STATUS": {
+          "@title": "LIFECYCLE_STATUS: LIFECYCLE_STATUS",
+          "key": true,
+          "type": "cds.String",
+          "length": 1
+        },
+        "CURRENCY_CODE": {
+          "@title": "CURRENCY_CODE: CURRENCY_CODE",
+          "key": true,
+          "type": "cds.String",
+          "length": 3
+        },
+        "PARTNER_GUID_NODE_KEY": {
+          "@title": "PARTNER_GUID_NODE_KEY: PARTNER_GUID_NODE_KEY",
+          "key": true,
+          "type": "cds.String",
+          "length": 32
+        },
+        "PO_ID": {
+          "@title": "PO_ID: PO_ID",
+          "key": true,
+          "type": "cds.Integer"
+        },
+        "PO_ITEM_POS": {
+          "@title": "PO_ITEM_POS: PO_ITEM_POS",
+          "key": true,
+          "type": "cds.Integer"
+        },
+        "NET_AMOUNT": {
+          "@title": "NET_AMOUNT: NET_AMOUNT",
+          "key": true,
+          "type": "cds.Decimal",
+          "precision": 15,
+          "scale": 2
+        },
+        "PO_ITEM_POS_1": {
+          "@title": "PO_ITEM_POS_1: PO_ITEM_POS_1",
+          "key": true,
+          "type": "cds.Integer"
+        },
+        "TAX_AMOUNT": {
+          "@title": "TAX_AMOUNT: TAX_AMOUNT",
+          "key": true,
+          "type": "cds.Decimal",
+          "precision": 15,
+          "scale": 2
         }
       }
     },
@@ -1169,7 +2946,7 @@
           "@odata.containment.ignore": true,
           "@title": "{i18n>Prod_key1}",
           "key": true,
-          "type": "dibyak.db.Guid",
+          "type": "Guid",
           "length": 32
         },
         "DESCRIPTION": {
@@ -1249,6 +3026,181 @@
     "sap.common.Currencies.texts": {
       "kind": "entity",
       "@odata.draft.enabled": false,
+      "elements": {
+        "locale": {
+          "key": true,
+          "type": "cds.String",
+          "length": 14
+        },
+        "name": {
+          "@title": "{i18n>Name}",
+          "localized": null,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@title": "{i18n>Description}",
+          "localized": null,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@odata.containment.ignore": true,
+          "@title": "{i18n>CurrencyCode}",
+          "@Common.Text": {
+            "=": "name"
+          },
+          "key": true,
+          "type": "cds.String",
+          "length": 3
+        }
+      }
+    },
+    "CatalogService.Currencies": {
+      "kind": "entity",
+      "@cds.autoexposed": true,
+      "@cds.autoexpose": true,
+      "@cds.persistence.skip": "if-unused",
+      "@UI.Identification": [
+        {
+          "Value": {
+            "=": "name"
+          }
+        }
+      ],
+      "@cds.odata.valuelist": true,
+      "projection": {
+        "from": {
+          "ref": [
+            "sap.common.Currencies"
+          ]
+        }
+      },
+      "elements": {
+        "name": {
+          "@title": "{i18n>Name}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@title": "{i18n>Description}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@title": "{i18n>CurrencyCode}",
+          "@Common.Text": {
+            "=": "name"
+          },
+          "key": true,
+          "type": "cds.String",
+          "length": 3
+        },
+        "symbol": {
+          "@title": "{i18n>CurrencySymbol}",
+          "type": "cds.String",
+          "length": 5
+        },
+        "texts": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "CatalogService.Currencies.texts",
+          "on": [
+            {
+              "ref": [
+                "texts",
+                "code"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "code"
+              ]
+            }
+          ]
+        },
+        "localized": {
+          "type": "cds.Association",
+          "target": "CatalogService.Currencies.texts",
+          "on": [
+            {
+              "ref": [
+                "localized",
+                "code"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "code"
+              ]
+            },
+            "and",
+            {
+              "ref": [
+                "localized",
+                "locale"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$user",
+                "locale"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "CatalogService.ProductSet.texts": {
+      "kind": "entity",
+      "@cds.autoexposed": true,
+      "@odata.draft.enabled": false,
+      "projection": {
+        "from": {
+          "ref": [
+            "dibyak.db.master.product.texts"
+          ]
+        }
+      },
+      "elements": {
+        "locale": {
+          "key": true,
+          "type": "cds.String",
+          "length": 14
+        },
+        "NODE_KEY": {
+          "@odata.containment.ignore": true,
+          "@title": "{i18n>Prod_key1}",
+          "key": true,
+          "type": "Guid",
+          "length": 32
+        },
+        "DESCRIPTION": {
+          "@title": "{i18n>Description}",
+          "localized": null,
+          "type": "cds.String",
+          "length": 255
+        }
+      }
+    },
+    "CatalogService.Currencies.texts": {
+      "kind": "entity",
+      "@cds.autoexposed": true,
+      "@odata.draft.enabled": false,
+      "projection": {
+        "from": {
+          "ref": [
+            "sap.common.Currencies.texts"
+          ]
+        }
+      },
       "elements": {
         "locale": {
           "key": true,

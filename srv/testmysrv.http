@@ -1,0 +1,93 @@
+GET http://localhost:4004/CatalogService
+
+##V2Service
+
+http://localhost:4004/v2/CatalogService
+
+###Read Purchase orders
+http://localhost:4004/CatalogService/POs?$top=2&$expand=Items,PARTNER_GUID
+
+###Create new Employee
+POST http://localhost:4004/CatalogService/EmployeeSet
+Content-Type: application/json
+
+{ 
+            "nameFirst": "DD",
+            "nameMiddle": null,
+            "nameLast": "Oberoy",
+            "nameInitials": null,
+            "sex": "M",
+            "language": "E",
+            "phoneNumber": "+91 (123) 456-7890",
+            "email": "dd.abap@gmail.com",
+            "loginName": "ANUBHAVO",
+            "accountNumber": "111222333",
+            "bankName": "HDFC bank"
+}
+
+
+###Read Single Employee Which was just created
+GET http://localhost:4004/CatalogService/EmployeeSet/ccf4fb8f-f784-47e2-b40b-94bc2886071f
+
+###Update the salary for the employee
+PATCH http://localhost:4004/CatalogService/EmployeeSet/ccf4fb8f-f784-47e2-b40b-94bc2886071f
+Content-Type: application/json;IEEE754Compatible=true
+
+{ 
+            "salaryAmount": "100000.99",
+            "Currency_code": "INR"
+}
+
+###Read Single PO - Old syntax works as its not UUID type
+GET http://localhost:4004/CatalogService/POs('74867AD200E41EDBA5D8B0C98DC28052')
+
+###Create new PO
+POST http://localhost:4004/CatalogService/POs
+Content-Type: application/json;IEEE754Compatible=true
+
+{
+	"Currency": { "code": "EUR" },
+	"GROSS_AMOUNT": "3913.91",
+	"NET_AMOUNT": "3289",
+	"TAX_AMOUNT": "624.91",
+	"PO_ID": 300000300,
+	"LIFECYCLE_STATUS": "N",
+	"OVERALL_STATUS": "P",
+	"PARTNER_GUID_NODE_KEY": "74867AD200E41EDBA5D8B06885B04052"
+}
+
+###Read From Custom Handler
+GET http://localhost:4004/mysrvdemo/ReadEmoployeeSrv/88488176-0f46-4b32-95c1-ad2028f12278
+
+###Create Employee with custom handler
+POST http://localhost:4004/mysrvdemo/InsertEmployeeSrv
+Content-Type: application/json;IEEE754Compatible=true
+
+{           
+    "ID": "02BD2137-0890-1EEA-A6C2-BB55C1978965",
+    "nameFirst": "DD",
+    "nameMiddle": null,
+    "nameLast": "Oberoy",
+    "nameInitials": null,
+    # "sex": "M",
+    "language": "E",
+    "phoneNumber": "+91 (123) 456-7890",
+    "email": "dd.abap@gmail.com",
+    "loginName": "ANUBHAVO",
+    "accountNumber": "111222333",
+    "bankName": "HDFC bank"
+}
+###Update using Custom Handler
+PUT  http://localhost:4004/mysrvdemo/UpdateEmployeeSrv/02BD2137-0890-1EEA-A6C2-BB55C1978965
+Content-Type: application/json;IEEE754Compatible=true
+
+{           
+    "ID": "02BD2137-0890-1EEA-A6C2-BB55C19867FB",
+    "nameFirst": "Chrisopher",
+    "nameLast": "Columbus"
+}
+
+###DELETE The data using Custom Handler
+DELETE http://localhost:4004/mysrvdemo/DeleteEmployeeSrv/02BD2137-0890-1EEA-A6C2-BB55C1978965
+
+
